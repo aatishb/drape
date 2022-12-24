@@ -31,7 +31,8 @@ var windForce = new THREE.Vector3( 0, 0, 0 );
 
 var rotate = false;
 var pinned = 'Corners';
-var thing = 'Ball';
+var thing = 'Moving Ball';
+var ballIsMoving = true;
 
 var cornersPinned, oneEdgePinned, twoEdgesPinned, fourEdgesPinned, randomEdgesPinned;
 
@@ -80,7 +81,7 @@ if(guiEnabled){
 
   f4.add(guiControls, 'rotate').name('auto rotate').onChange(function(value){rotate = value;});
   f4.add(guiControls, 'wind').name('wind').onChange(function(value){wind = value;});
-  f4.add(guiControls, 'thing', ['None', 'Ball', 'Table']).name('object').onChange(function(value){createThing(value);});
+  f4.add(guiControls, 'thing', ['None', 'Stationary Ball', 'Moving Ball', 'Table']).name('object').onChange(function(value){createThing(value);});
   f4.add(guiControls, 'pinned', ['None','Corners', 'OneEdge', 'TwoEdges','FourEdges']).name('pinned').onChange(function(value){pinCloth(value);});
 
   var f1 = gui.addFolder('Behavior');
@@ -204,11 +205,21 @@ function pinCloth(choice){
 
 function createThing(thing){
 
-  if(thing == 'Ball' || thing == 'ball'){
+  if(thing == 'Stationary Ball' || thing == 'stationary ball'){
     sphere.visible = true;
     table.visible = false;
+    ballIsMoving = false;
+    // currently ball takes last Moving Ball position-- how to reset position?
     restartCloth();
   }
+  
+  if(thing == 'Moving Ball' || thing == 'moving ball'){
+    sphere.visible = true;
+    table.visible = false;
+    ballIsMoving = true;
+    restartCloth();
+  }
+  
   else if(thing == 'Table' || thing == 'table'){
 
     // these variables are used in the table collision detection
@@ -538,12 +549,13 @@ function simulate( time ) {
     satisifyConstrains( constrain[ 0 ], constrain[ 1 ], constrain[ 2 ], constrain[ 3] );
   }
 
-
-  prevBallPosition.copy(ballPosition);
-  ballPosition.y = 50*Math.sin(Date.now()/600);
-  ballPosition.x = 50*Math.sin(Date.now()/600);
-  ballPosition.z = 50*Math.cos(Date.now()/600);
-  sphere.position.copy( ballPosition ); //maybe remove this since it's also in render()
+  if (ballIsMoving == true){
+    prevBallPosition.copy(ballPosition);
+    ballPosition.y = 50*Math.sin(Date.now()/600);
+    ballPosition.x = 50*Math.sin(Date.now()/600);
+    ballPosition.z = 50*Math.cos(Date.now()/600);
+    sphere.position.copy( ballPosition ); //maybe remove this since it's also in render()
+  }
 
   if(avoidClothSelfIntersection){
     for ( i = 0; i < particles.length; i ++ ){
