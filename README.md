@@ -1,5 +1,5 @@
 # [Drape](https://gitcdn.xyz/repo/aatishb/drape/master/index.html)
-A [fabric design and simulation tool](https://gitcdn.xyz/repo/aatishb/drape/master/index.html), built in [three.js](http://threejs.org/).
+A [fabric design and simulation tool](aatishb.com/drape), built in [three.js](http://threejs.org/).
 
 ## Change log
 - May 2: added multiple options for pinned constraints, option to avoid cloth self-intersections (very slow!)
